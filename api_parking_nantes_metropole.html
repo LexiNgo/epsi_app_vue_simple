@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nantes Metropole trafics</title>
+</head>
+<body>
+
+    <div id="trafics-app">
+        <ul>
+            <li v-for="trafic in trafics" :key="trafic.code">
+              {{ trafic.intitule }} - : {{ trafic.resume }}
+            </li>
+        </ul>
+    </div>
+
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://unpkg.com/vue@3"></script>
+    <script>
+        const apiURL = "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_info-trafic-tan-temps-reel/records?limit=20"
+        const config = {};
+        Vue.createApp({
+            data() {
+                return{
+                    trafics: [],
+                };
+            },
+            created: function(){
+                this.fetchDataPromise();
+            },
+            methods: {
+                fetchDataPromise: function(){
+                    axios
+                        .get(apiURL)
+                        .then((response) => {
+                            console.log(response.data.results);
+                            this.trafics = response.data.results
+						})
+						.catch(function (error) {
+							console.log("appel api en erreur")
+							console.log(error);
+						});
+					},
+            }
+        }).mount("#trafics-app");
+    </script>
+</body>
+</html>
